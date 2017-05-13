@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Scribble input - always watches. Valid inputs
+# tf
+INPUT=$1
+
+if [ -z $INPUT ];then
+    echo "Please provide a project type"
+    exit 1
+fi
+
+if [ $INPUT == "tf" ]; then
+    gulp --gulpfile=/Users/kbrockman/code/personal/scribble/tf.gulpfile.js --cwd $(pwd) watch
+fi
+else 
