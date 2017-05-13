@@ -8,10 +8,6 @@ var server = lr();
 gulp.task('tf-fmt', shell.task(['terraform fmt']));
 gulp.task('tf-build', shell.task(['terraform plan']));
 
-function isLineCommented(line) {
-
-}
-
 // TODO: parse common errors (e.g. terraform get)
 // TODO: dive into terraform modules and watch there as well...
 
@@ -65,7 +61,7 @@ gulp.task('default', () => {
 // Watch
 gulp.task('watch', function() {
 
-  // Listen on port 35729
+  // TODO: randomize port
   server.listen(35729, function (err) {
     if (err) {
       return console.log(err)
@@ -73,9 +69,11 @@ gulp.task('watch', function() {
 
     // TODO: get modules and add to watch
 
-    // scan each .tf file in directory for modules
+    // all the directories we should watch
     var toWatch = [];
     var directory = argv.cwd;
+
+    // read all .tf files in the directory
     const fs = require('fs');
     fs.readdir(directory, (err, files) => {
       files.forEach(file => {
@@ -86,15 +84,16 @@ gulp.task('watch', function() {
             input: require('fs').createReadStream(file)
           });
 
+          // start watching for module definitions
           lineReader.on('line', function (line) {
             if (line.includes('module "')) {
               watchForSource = true;
             }
 
+            // if find module, grab its source url 
             if (watchForSource && line.includes('source')) {
               var dir = line.match(/(?:"[^"]*"|^[^"]*$)/)[0].replace(/"/g, "") + '/*';
               toWatch.push(dir);
-              console.log(dir);
               watchForSource = false;
             }
           }).on('close', () => {
