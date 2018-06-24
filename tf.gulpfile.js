@@ -7,6 +7,7 @@ var server = lr();
 
 gulp.task('tf-fmt', shell.task(['terraform fmt']));
 gulp.task('tf-build', shell.task(['terraform plan']));
+gulp.task('tf-get', shell.task(['terraform get']));
 
 // TODO: parse common errors (e.g. terraform get)
 // TODO: dive into terraform modules and watch there as well...
@@ -104,7 +105,7 @@ gulp.task('watch', function() {
 
               gulp.watch(toWatch, function(event) {
                 console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
-                gulp.run('tf-fmt', 'tf-build');
+                gulp.run('tf-get', 'tf-fmt', 'tf-build');
               })
           })
         }
